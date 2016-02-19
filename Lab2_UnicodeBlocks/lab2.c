@@ -39,7 +39,7 @@ int findMatch(int codepoint, int last){
 }
 
 
-int parseInput(char* line, int blockIndex) {
+void parseInput(char* line, int blockIndex) {
 
 	//convert starting hex to an int and store it as the start of a block
 	int i = 0;	
@@ -115,16 +115,16 @@ int main() {
 	scanf("%d", &codepoint);
 
 	do{
-		
+		puts("--------------- ");
 		int blockIndex = findMatch(codepoint, size);
 
 		if(blockIndex == -1){
-			puts("\nNo matching block found.");
+			puts("No matching block found.");
 		} else {
-			printf("\n%s", blocks[blockIndex].name);
+			printf("%s", blocks[blockIndex].name);
 		}
 
-		puts("\n\nTry another number (-1 to exit):\n");
+		puts("\n\n\nTry another number (-1 to exit):\n");
 		scanf("%d", &codepoint);
 	} while (codepoint != -1);
 	
