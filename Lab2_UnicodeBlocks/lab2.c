@@ -91,7 +91,7 @@ int readFile() {
 		perror("[ERROR]");
 		return 0;
 	} else {
-			//loop through each line (ignoring text at beginning) and store relevant information
+		//loop through each line (ignoring text at beginning) and store relevant information
 		while(fgets(line, 300, fp) != NULL) {
 			if(line[0] == '#' || line[0] == ' ' || line[0] == '\n'){ continue; } 
 			else {
