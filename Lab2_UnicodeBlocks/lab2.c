@@ -15,7 +15,6 @@ struct blockElement{
 };
 
 //Create array of blockElements
-//pretty sure this could be a pointer
 struct blockElement blocks[300];
 
 int findMatch(int codepoint, int last){
@@ -88,18 +87,22 @@ int readFile() {
 	
 	//if fp is null, display error
 	fp = fopen("Blocks.txt", "r");
-	
-	//loop through each line (ignoring text at beginning) and store relevant information
-	while(fgets(line, 300, fp) != NULL) {
-		if(line[0] == '#' || line[0] == ' ' || line[0] == '\n'){ continue; } 
-		else {
-			parseInput(line, blockIndex);
-			blockIndex++;
+	if(fp == NULL){
+		perror("[ERROR]");
+		return 0;
+	} else {
+			//loop through each line (ignoring text at beginning) and store relevant information
+		while(fgets(line, 300, fp) != NULL) {
+			if(line[0] == '#' || line[0] == ' ' || line[0] == '\n'){ continue; } 
+			else {
+				parseInput(line, blockIndex);
+				blockIndex++;
+			}
 		}
-	}
 
-	fclose(fp);
-	return blockIndex;
+		fclose(fp);
+		return blockIndex;
+	}
 }
 
 int main() {
@@ -108,25 +111,26 @@ int main() {
 	puts(" -----	Author: Matt Hixon 	-----\n\n");
 
 	int size = readFile();
-	
 
-	int codepoint;
-	puts("Enter a Codepoint Value (integer)\n");
-	scanf("%d", &codepoint);
-
-	do{
-		puts("--------------- ");
-		int blockIndex = findMatch(codepoint, size);
-
-		if(blockIndex == -1){
-			puts("No matching block found.");
-		} else {
-			printf("%s", blocks[blockIndex].name);
-		}
-
-		puts("\n\n\nTry another number (-1 to exit):\n");
+	if(size != 0){
+		int codepoint;
+		puts("Enter a Codepoint Value (integer)\n");
 		scanf("%d", &codepoint);
-	} while (codepoint != -1);
+
+		do{
+			puts("--------------- ");
+			int blockIndex = findMatch(codepoint, size);
+
+			if(blockIndex == -1){
+				puts("No matching block found.");
+			} else {
+				printf("%s", blocks[blockIndex].name);
+			}
+
+			puts("\n\n\nTry another number (-1 to exit):\n");
+			scanf("%d", &codepoint);
+		} while (codepoint != -1);
+	}
 	
 }
 
