@@ -12,6 +12,7 @@ struct blockElement{
 	unsigned int start;
 	unsigned int end;
 	char *name;
+	int counter;
 
 };
 
@@ -79,7 +80,7 @@ void parseInput(char* line, int blockIndex) {
 	*/
 }
 
-//Read a file
+//Read the blocks file
 int readBlocksFile() {
 	
 	FILE* fp;
@@ -106,6 +107,40 @@ int readBlocksFile() {
 	}
 }
 
+void recognizeAlphabet(int size){
+	//recognize alphabet
+	char line[2048];
+	unsigned char *c;
+	int lenptr;
+ 	unsigned int codepoint;
+ 	int blockIndex = 0;
+
+ 	while(fgets(line, 2048, stdin) != NULL){
+ 		c = line;
+ 		while(*c != '\0' && *c != '\n'){
+ 			codepoint = utf8_to_codepoint(c, &lenptr);
+			if(codepoint > 0){ 
+				int blockIndex = findMatch(codepoint, size);
+				if(blockIndex != -1){ blocks[blockIndex].counter += 1; }	 
+				c = c + lenptr; 
+			}
+			if(codepoint == 0){c++;}
+ 		}
+ 	}
+}
+
+int getAlphabet(size){
+	int highest = 0;
+ 	int i, highestIndex;
+ 	for(i = 0; i < size; i++){
+ 		if(blocks[i].counter > highest){
+ 			highest = blocks[i].counter;
+ 			highestIndex = i;
+ 		}
+ 	}
+ 	return highestIndex;
+}
+
 int main() {
 
 	puts("\n\n ----- 	Lab 3: Alphabet Recognition 	----- ");
@@ -113,45 +148,16 @@ int main() {
 
 	//get blocks
 	int size = readBlocksFile();
-	
-	//recognize alphabet
-	unsigned char* c;
-	int* intptr;
- 	int codepoint;
-	char line[2048];
-	while(fgets(line, 2048, stdin)){
-		c = line;
-		while(c != '\0'){
-			codepoint = utf8_to_codepoint(c, intptr);
-			printf("Codepoint: %d\n", codepoint);
-			c = c + *intptr;
-		}
-		
-		
-	}
 
-/*
-	if(size != 0){
-		int codepoint;
-		puts("Enter a Codepoint Value (integer)\n");
-		scanf("%d", &codepoint);
+	//iterates through chars and counts which codeblock it belongs to
+	recognizeAlphabet(size);
 
-		do{
-			puts("--------------- ");
-			int blockIndex = findMatch(codepoint, size);
+	//Finds the most common codeblock associated with text
+	int alphaIndex = getAlphabet(size);
 
-			if(blockIndex == -1){
-				puts("No matching block found.");
-			} else {
-				printf("%s", blocks[blockIndex].name);
-			}
+	//prints alphabet
+ 	printf("\nAlphabet: %s\n\n\n", blocks[alphaIndex].name);
 
-			puts("\n\n\nTry another number (-1 to exit):\n");
-			scanf("%d", &codepoint);
-		} while (codepoint != -1);
-
-	}
-*/
 	//free memory in struc here before program ends
 	
 }
