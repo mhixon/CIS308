@@ -6,12 +6,19 @@
 #include<dirent.h>
 #include<errno.h>
 #include<stdlib.h>
-#
+#include<string.h>
+#include<ctype.h>
+#include<stdlib.h>
+
+
+
+#define MAX 32
 
 //used tree template from http://www.cprogramming.com/tutorial/c/lesson18.html
 struct node{
 	char* word;
-	char** languages;
+	char languages[MAX][64];
+	int languageIndex;
 	struct node *left;
 	struct node *right;
 };
@@ -30,27 +37,38 @@ void destroy_tree(struct node *leaf)
 }
 
 
-void insert(char[] key, struct node **leaf)
+void insert(char* key, struct node **leaf, char* lang)
 {
-    if( *leaf == 0 )
+	//puts("Insert Method");
+    if( *leaf == NULL )
     {
-        *leaf = (struct node*) malloc( sizeof( struct node ) );
-        (*leaf)->word = key;
+    	//puts("NULL LEAF");
+        *leaf = (struct node*) malloc( sizeof(struct node));
+        (*leaf)->word = malloc(strlen (key) + 1);
+        strcpy ((*leaf)->word, key);
+        //puts("LEAF CPY");
+        memset((*leaf)->languages, 0, sizeof((*leaf)->languages));
+        strcpy ((*leaf)->languages[0],lang);
+        (*leaf)->languageIndex = 1;
         /* initialize the children to null */
-        (*leaf)->left = 0;    
-        (*leaf)->right = 0;  
+        (*leaf)->left = NULL;    
+        (*leaf)->right = NULL;
+        printf("Key: %s,  Value: %s,  Lang1: %s\n" , key, (*leaf)->word, (*leaf)->languages[0]);  
     }
     else if(strcmp(key, (*leaf)->word) < 0)
     {
-        insert( key, &(*leaf)->left );
+        insert( key, &(*leaf)->left, lang);
     }
     else if(strcmp(key, (*leaf)->word) > 0)
     {
-        insert( key, &(*leaf)->right );
+        insert( key, &(*leaf)->right, lang);
+    } else {
+    	strcpy ((*leaf)->languages[(*leaf)->languageIndex], lang);
+    	(*leaf)->languageIndex += 1;
     }
 }
 
-struct node *search(int key, struct node *leaf)
+struct node *search(char* key, struct node *leaf)
 {
   if( leaf != 0 )
   {
@@ -72,46 +90,42 @@ struct node *search(int key, struct node *leaf)
 }
 
 
-void readDirectory(char* dir) {
+
+
+void readDirectory(char* dir, struct node* root) {
 	//check if dir exists
 	DIR *dirp = opendir(dir);
 	if(dirp == NULL){
 		perror("couldn't open");
 		return;
-	}
+	} else{
+
+
 	
 	//store everything in dir
 	struct dirent *dp = readdir(dirp);
+	char* fileName = strcat(dir, "/");
+	char lng[64];
+	//printf("FILENAME: %s\n", fileName);
 	
 	//iterate through dir
-	do {
-        if ((dp = readdir(dirp)) != NULL) {
-			//do stuff here
-			//store in a struct
-			//create a giant tree with all the stop words
-			//how do you differentiate from smae words in different language
-			//create tree with
 
-			//char* word
-			//char*[] languages
-			//tree leftchild
-			//tree rightchild
-			char line[300];
-			FILE* fp = fopen(dp->d_name, "r");
-			if(fp == NULL){
-				perror("[ERROR]");
-				return;			
-			} else {
-				while(fgets(line, 300, fp) != NULL){
-					struct *node newNode = (struct node)malloc(sizeof(struct node));
-					newNode->word = line;
-					newNode->languages = dp->d_name;
-					insert(dp->d_name, newNode);
-				}
+	while((dp = readdir(dirp)) != NULL){
+		char line[300];
+		//printf("%s\n", dp->d_name);
+		strcpy(lng, fileName);
+		strcat(lng, dp->d_name);
+		printf("%s\n", lng);
+		FILE* fp = fopen(lng, "r");
+		if(fp == NULL){
+			perror("[ERROR]");
+			return;			
+		} else {
+			while(fgets(line, 300, fp) != NULL){
+				insert(line, &root, dp->d_name);
 			}
-			printf("%s\n", dp->d_name);
-        }
-    } while (dp != NULL);
+		}
+	}
 	closedir(dirp);
 }
 
@@ -124,11 +138,14 @@ int main() {
 	
 	char* stopWordDir = (char*)malloc(sizeof(256));
 	scanf("%s", stopWordDir);
-	readDirectory(stopWordDir);
-
+	struct node *root = NULL;
+	readDirectory(stopWordDir, root);
+	struct node *result = search("ale", root);
+	printf("RESULT: %s", result->word);
 	
 
 
 	//printf("%s", stopWordDir);
 	return 0;
+
 }
