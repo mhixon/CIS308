@@ -1,7 +1,6 @@
 //Author: Matt Hixon
 //Lab4: Stop Words
 
-
 #include<stdio.h>
 #include<dirent.h>
 #include<errno.h>
@@ -10,21 +9,16 @@
 #include<ctype.h>
 #include<stdlib.h>
 
-#define MAX 32
-
-
 //started with tree template from http://www.cprogramming.com/tutorial/c/lesson18.html
- 
 
 struct node
 {
 	char* word;
-	char languages[MAX][64];
+	char languages[32][64];
 	int languageIndex;
 	struct node *left;
 	struct node *right;
 };
-
 
 void destroy_tree(struct node **leaf)
 {
@@ -36,7 +30,6 @@ void destroy_tree(struct node **leaf)
       free((*leaf));
   }
 }
-
 
 void insert(char* key, struct node **leaf, char* lang)
 {
@@ -62,7 +55,6 @@ void insert(char* key, struct node **leaf, char* lang)
     }
 }
 
-
 void search(char* key, struct node *leaf)
 {
   if( leaf != NULL )
@@ -78,12 +70,9 @@ void search(char* key, struct node *leaf)
 		}
       }
       else if(strcmp(key, leaf->word) < 0) { return search(key, leaf->left); }
-
       else { return search(key, leaf->right); }
-  
   }else{ puts("Word not found"); }
 }
-
 
 void readDirectory(char* dir, struct node** rootp) {
 	//check if dir exists
@@ -98,7 +87,6 @@ void readDirectory(char* dir, struct node** rootp) {
 			char line[300];
 			strcpy(lng, fileName);
 			strcat(lng, dp->d_name);
-
 			FILE* fp = fopen(lng, "r");
 			if(fp == NULL){ perror("[ERROR]"); } 
 			else {
@@ -116,7 +104,6 @@ void readDirectory(char* dir, struct node** rootp) {
 	}
 }
 
-
 int main(int argc, char *argv[]) {
 	puts("\n\n ----- 	Lab 4: Stop Words 	----- ");
 	puts(" -----	Author: Matt Hixon 	-----\n\n");
@@ -127,7 +114,6 @@ int main(int argc, char *argv[]) {
 	{
 		puts("Command line argument error.\n");
 		puts("Please re-run program with name of valid directory to read from.");
-
 	} 
 	else 
 	{
@@ -138,7 +124,6 @@ int main(int argc, char *argv[]) {
 		scanf("%s", wordToFind);
 		search(wordToFind, root);
 	}
-
 	destroy_tree(&root);
 	root = NULL;
 	return 0;
