@@ -104,6 +104,28 @@ void readDirectory(char* dir, struct node** rootp) {
 	}
 }
 
+void getInput(){
+	char line[512];
+	char word *c;
+	
+
+	while(fgets(line,512,stdin) != NULL){	
+		int slen = strlen(line);
+		while(isspace(line[slen-1]) && slen){
+			slen--;
+		}
+		
+		while(slen){
+			if(line[slen] == ' '){
+				line[slen] = '\0';
+			}
+			slen--;
+		}
+
+		
+	}
+}
+
 int main(int argc, char *argv[]) {
 	puts("\n\n ----- 	Lab 4: Stop Words 	----- ");
 	puts(" -----	Author: Matt Hixon 	-----\n\n");
@@ -119,6 +141,8 @@ int main(int argc, char *argv[]) {
 	{
 		printf("Collecting words from %s\n", argv[1]);
 		readDirectory(argv[1], &root);
+		getInput();
+
 		char* wordToFind = (char*)malloc(sizeof(256));
 		puts("Enter Word to find: \n");
 		scanf("%s", wordToFind);
