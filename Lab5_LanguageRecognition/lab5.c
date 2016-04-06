@@ -8,6 +8,7 @@
 #include<string.h>
 #include<ctype.h>
 #include<stdlib.h>
+#include "utf8.h"
 
 //started with tree template from http://www.cprogramming.com/tutorial/c/lesson18.html
 
@@ -105,32 +106,56 @@ void readDirectory(char* dir, struct node** rootp) {
 }
 
 void getInput(){
-	char *line = (char*)malloc(sizeof(512));
-	//char word *c;
+	char line[2048];
+	unsigned char *c;
+	int lenptr;
+	unsigned int codepoint;
 	int i;
+	char word[64];
 	
 
-	while(fgets(line,512,stdin) != NULL){
-puts("GETTING INPUT\n");	
-		int slen = strlen(line);
-		while(isspace(*line+(slen-1)) && slen){
-			slen--;
+	while(fgets(line,2048,stdin) != NULL){
+		c=line;
+		while(*c != '\0' && !ispunct(*c)){
+			codepoint = utf8_to_codepoint(c, &lenptr);
+			word[i] = c;
+			i++;
+			if(codepoint > 0) {
+				c = c + lenptr;
+			}
+			if(codepoint == 0){
+				c++;
+			}
+			
 		}
-puts("GETTING INPUTLOOP1\n");
+		if(*c == '\''){
+			codepoint = utf8_to_codepoint(c, &lenptr);
+			word[i] = c;
+			i++;	
+			if(codepoint > 0) {
+				c = c + lenptr;
+			}
+			if(codepoint == 0){
+				c++;
+			}
+		}else{
+			word[i] = '\0';
+			i=0;
+			printf("Word: %s\n", &word);
+		}
+/*
 		//don't forget end of line
 		while(slen){
 			if(line[slen] == ' '){
 				line[slen] = '\0';
-puts("GETTING INPUT LOPP\n");
 			}
 			slen--;
 		}
-puts("GETTING INPUT END\n");
 
 		for(i=0; i < strlen(line); i++){
 			printf("Word %d: %s\n", i, line);
 		}
-		
+		*/
 	}
 }
 
