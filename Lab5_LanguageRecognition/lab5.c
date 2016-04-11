@@ -125,53 +125,53 @@ struct language* readDirectory(char* dir, struct node** rootp) {
 	}
 }
 
-void getInput(struct node* rootp, struct language languageArray[]){
-	char *line = (char*)malloc(sizeof(512));
-	char word[32];
-	int i;
+void getInput(){
+	char line[2048];
+	unsigned char *c;
 	int lenptr;
 	unsigned int codepoint;
-	unsigned char *c;
-	//loop through each line
-	while(fgets(line,512,stdin) != NULL){
+	int i;
+	char word[64];
+	
 
-		i=0;
-		c = line;
-		//while not the end of a string
-		while(*c != '\0'){
-			//get each letter
+	while(fgets(line,2048,stdin) != NULL){
+		c=line;
+		while(*c != '\0' && !ispunct(*c)){
 			codepoint = utf8_to_codepoint(c, &lenptr);
-
-			//check for punctuation but ignore single quote
-			if(*c == ' ' || ispunct(*c)){
-				if (*c == '\'')
-				{
-					word[i] = *c;
-					i++;
-				} else{
-					word[i] = '\0';
-
-					search(word,rootp, languageArray);
-
-					i=0;
-				}
-			} else{
-				//add letter to an array that contains the word
-				word[i] = *c;
-				i++;
-			}
-			//increment the pointer to point to next letter
-			if(codepoint > 0){
-				c += lenptr;
+			word[i] = c;
+			i++;
+			if(codepoint > 0) {
+				c = c + lenptr;
 			}
 			if(codepoint == 0){
 				c++;
 			}
+			
 		}
-		
-	}
-}
-*/
+		if(*c == '\''){
+			codepoint = utf8_to_codepoint(c, &lenptr);
+			word[i] = c;
+			i++;	
+			if(codepoint > 0) {
+				c = c + lenptr;
+			}
+			if(codepoint == 0){
+				c++;
+			}
+		}else{
+			word[i] = '\0';
+			i=0;
+			printf("Word: %s\n", &word);
+		}
+/*
+		//don't forget end of line
+		while(slen){
+			if(line[slen] == ' '){
+				line[slen] = '\0';
+			}
+			slen--;
+		}
+		*/
 int main(int argc, char *argv[]) {
 
 
