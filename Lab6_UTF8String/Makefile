@@ -1,3 +1,0 @@
-all: utf8test
-
-

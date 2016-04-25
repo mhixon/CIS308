@@ -31,14 +31,14 @@ class utf8string {
       // ------------------------------------------------
       // GROUP A
       // -------
-      // bool operator==(const utf8string&);     // Comparison operator
+         bool operator==(const utf8string&);     // Comparison operator
       // utf8string operator+(const utf8string); // Regular concatenation
       // utf8string &operator+=(const utf8string);
       //
       // GROUP B
       // -------
       // friend std::istream &operator>>(std::istream&, utf8string&);
-      // utf8string upper();
+         utf8string upper();
       // utf8string lower();
       // utf8string unaccent();
       // utf8string reverse();   // return the reversed string

@@ -150,11 +150,11 @@ int main() {
     // test_str += string("!");
     // cout << test_str << endl;
     // -- Testing comparison
-    // if (test_str == utf8string(string("Hello world!"))) {
-    //   cout << "Equal" << endl;
-    // } else {
-    //   cout << "Not equal" << endl;
-    // }
+     if (test_str == utf8string(string("Hello world!"))) {
+       cout << "Equal" << endl;
+     } else {
+       cout << "Not equal" << endl;
+     }
     // -- Testing input
     // cout << "Please enter anything, preferably with multi-byte characters:"
     //      << endl;
@@ -165,7 +165,7 @@ int main() {
     for (i = 0; i < NOBEL_CNT; i++) {
        cout << nobel_literature[i];
        cout << " " << nobel_literature[i].length();
-       // cout << " " << nobel_literature[i].upper();
+       cout << " " << nobel_literature[i].upper();
        // cout << " " << nobel_literature[i].lower();
        // cout << " " << nobel_literature[i].unaccent();
        // cout << " " << nobel_literature[i].reverse();
